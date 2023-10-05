@@ -109,12 +109,27 @@ app.get('/checkout', (req, res) => {
 
 app.get('/login', (req, res) => {
   // TODO: Implement this
-  res.send('Login has not been implemented yet!');
+  res.send('login.html.njk');
 });
 
 app.post('/process-login', (req, res) => {
-  // TODO: Implement this
-  res.send('Login has not been implemented yet!');
+  for (const user of users) {
+    if (req.body.username === user.username && req.body.password === user.password) {
+      req.session.username = user.username;
+      res.redirect('/all-animals');
+      return;
+    }
+  }
+  res.render('login.html.njk', { message: 'Invalid username or password' });
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.log(err);
+    }
+    res.redirect('/all-animals');
+  });
 });
 
 app.listen(port, () => {
